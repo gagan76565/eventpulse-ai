@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_file
 import os
 import pandas as pd
 import csv
+import nltk
 
 from utils.preprocess import clean_text
 from utils.sentiment import analyze_sentiment
@@ -15,6 +16,9 @@ from utils.summary import generate_summary
 from utils.frequency import complaint_frequency
 
 app = Flask(__name__)
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('omw-1.4')
 
 UPLOAD_FOLDER = "uploads"
 
