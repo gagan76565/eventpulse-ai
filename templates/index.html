@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center px-6">
+
+    <div class="max-w-5xl w-full">
+
+        <div class="text-center mb-14">
+
+            <h1 class="text-6xl font-extrabold mb-6 leading-tight">
+                EventPulse AI
+            </h1>
+
+            <p class="text-slate-300 text-xl max-w-3xl mx-auto">
+                Transform raw attendee feedback into actionable AI-powered insights.
+            </p>
+
+        </div>
+
+        <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-10 shadow-2xl">
+
+            {% if error %}
+
+            <div class="bg-red-500/20 border border-red-500 text-red-300 p-4 rounded-2xl mb-6">
+                {{ error }}
+            </div>
+
+            {% endif %}
+
+            <form
+                action="/analyze"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                <div class="mb-8">
+
+                    <label class="block mb-4 text-xl font-semibold">
+                        Paste Feedback Responses
+                    </label>
+
+                    <textarea
+                        name="feedback_text"
+                        rows="10"
+                        class="w-full rounded-3xl bg-slate-900/80 border border-slate-700 p-5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+                        placeholder="Paste attendee feedback here..."
+                    ></textarea>
+
+                </div>
+
+                <div class="mb-10">
+
+                    <label class="block mb-4 text-xl font-semibold">
+                        Upload CSV or TXT File
+                    </label>
+
+                    <input
+                        name="file"
+                        type="file"
+                        class="w-full bg-slate-900/80 border border-slate-700 rounded-2xl p-4"
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-300 rounded-3xl py-5 text-xl font-bold shadow-xl"
+                >
+                    Analyze Feedback with AI
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

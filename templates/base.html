@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>EventPulse AI</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body class="bg-slate-950 text-white min-h-screen">
+
+    <!-- Loading Overlay -->
+
+    <div
+        id="loadingOverlay"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center"
+    >
+
+        <div class="text-center">
+
+            <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-blue-500 border-solid mx-auto mb-6"></div>
+
+            <h2 class="text-2xl font-bold">
+                Analyzing Feedback...
+            </h2>
+
+            <p class="text-slate-400 mt-2">
+                AI is generating insights
+            </p>
+
+        </div>
+
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <script>
+
+        const forms = document.querySelectorAll("form");
+
+        forms.forEach(form => {
+
+            form.addEventListener("submit", () => {
+
+                document
+                    .getElementById("loadingOverlay")
+                    .classList.remove("hidden");
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>
