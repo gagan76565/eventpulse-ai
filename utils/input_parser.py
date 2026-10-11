@@ -7,11 +7,13 @@ _FEEDBACK_LABEL = re.compile(
     flags=re.IGNORECASE,
 )
 
+
 def _remove_wrapping_quotes(value: str) -> str:
     value = value.strip()
-    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"\\\"", "\'"}:
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
         value = value[1:-1].strip()
     return value
+
 
 def split_feedback(text: str) -> list[str]:
     """Extract feedback values from labeled blocks, otherwise split non-empty lines.
