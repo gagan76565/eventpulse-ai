@@ -10,6 +10,7 @@ import streamlit as st
 from wordcloud import WordCloud
 
 from utils.preprocessing import clean_text
+from utils.input_parser import split_feedback
 from utils.sentiment import analyze_sentiment
 from utils.topic_extraction import extract_topics
 from utils.complaint_detector import detect_complaints
@@ -46,10 +47,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-
-def split_feedback(text: str) -> list[str]:
-    return [line.strip() for line in text.splitlines() if line.strip()]
 
 
 def read_uploaded_feedback(uploaded_file) -> list[str]:
@@ -182,7 +179,7 @@ st.markdown(
 
 with st.sidebar:
     st.markdown("## Feedback workspace")
-    st.caption("Paste responses or upload a CSV/TXT file. Each non-empty line is treated as one response.")
+    st.caption("Paste responses or upload a CSV/TXT file. Labeled attendee blocks are parsed from their Feedback fields; plain text uses one response per line.")
     st.markdown("---")
     st.markdown("**Analysis pipeline**")
     st.write("1. Text normalization")
@@ -198,7 +195,7 @@ with left:
         "Paste feedback responses",
         height=230,
         placeholder="The speakers were excellent\nRegistration took too long\nLoved the hands-on workshop",
-        help="Put one response per line. You may also upload a file below.",
+        help="Use one response per line, or paste structured attendee blocks with Attendee ID, Rating, and Feedback labels. Structured blocks are counted by Feedback fields only.",
     )
 with right:
     uploaded_file = st.file_uploader(
@@ -207,6 +204,9 @@ with right:
         help="CSV should contain a feedback/response/comment/text column, or a text column as its first column.",
     )
     st.info("Tip: Use the sample CSV in the repository's data/ folder to try the app.")
+
+if pasted_text.strip() and uploaded_file is not None:
+    st.warning("Both pasted feedback and the uploaded file will be analyzed. If they contain the same responses, they will be counted twice.")
 
 run_analysis = st.button("Analyze feedback", type="primary", use_container_width=True)
 
