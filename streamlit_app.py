@@ -228,9 +228,9 @@ if run_analysis:
                 st.session_state["eventpulse_result"] = result
     except (ValueError, UnicodeDecodeError, pd.errors.ParserError) as exc:
         st.error(str(exc))
-    except Exception as exc:
-        st.error("Analysis could not be completed. Check the uploaded file format and try again.")
-        st.exception(exc)
+    except Exception:
+        # Keep implementation details out of the public app; diagnose via Space logs.
+        st.error("Analysis could not be completed. Check the uploaded file format and try again. If the problem persists, inspect the Space logs.")
 
 result = st.session_state.get("eventpulse_result")
 
@@ -310,7 +310,8 @@ if result:
         st.markdown("### Common complaints")
         if result["complaints"]:
             for complaint in result["complaints"]:
-                st.markdown(f'<div class="insight-card">⚠️ {complaint}</div>', unsafe_allow_html=True)
+                with st.container(border=True):
+                    st.warning(complaint)
         else:
             st.success("No complaint matched the current complaint-detection rules.")
             st.caption("This does not guarantee that the feedback contains no problems.")
@@ -319,14 +320,16 @@ if result:
     positives = result["positives"]
     if positives:
         for positive in positives[:5]:
-            st.markdown(f'<div class="insight-card">✓ {positive}</div>', unsafe_allow_html=True)
+            with st.container(border=True):
+                st.success(positive)
     else:
         st.caption("No responses were classified as positive by the sentiment model.")
 
     st.markdown("## Recommended actions for the next event")
     if result["suggestions"]:
         for i, suggestion in enumerate(result["suggestions"], start=1):
-            st.markdown(f'<div class="insight-card"><strong>{i}.</strong> {suggestion}</div>', unsafe_allow_html=True)
+            with st.container(border=True):
+                st.markdown(f"**{i}.** {suggestion}")
     else:
         st.caption("No recommendations were generated for this batch.")
 

@@ -1,0 +1,11 @@
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.git/
+.env
+*.db
+exports/
+uploads/
+static/images/*
+!static/images/.gitkeep
