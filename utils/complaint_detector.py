@@ -53,10 +53,12 @@ def detect_complaints(feedback_list):
             if not clause or not _KEYWORD_PATTERN.search(clause):
                 continue
 
-            # If a known issue subject appears before the negative signal, keep
-            # the issue-focused portion instead of the preceding praise.
             subject = _ISSUE_SUBJECT_PATTERN.search(clause)
-            if subject and _KEYWORD_PATTERN.search(clause[subject.start():]):
+            if (
+                subject
+                and not _KEYWORD_PATTERN.search(clause[:subject.start()])
+                and _KEYWORD_PATTERN.search(clause[subject.start():])
+            ):
                 clause = clause[subject.start():].strip(" .,!;:-")
             candidates.append(clause)
 
