@@ -26,6 +26,17 @@ class ComplaintDetectorTests(unittest.TestCase):
             ],
         )
 
+    def test_mixed_feedback_without_punctuation_is_trimmed_to_complaint(self):
+        mixed = (
+            "great networking opportunities this year i loved how interactive "
+            "the workshops were the event app kept crashing when i tried to view "
+            "my personalized schedule"
+        )
+        self.assertEqual(
+            detect_complaints([mixed]),
+            ["the event app kept crashing when i tried to view my personalized schedule"],
+        )
+
     def test_negative_feedback_is_still_detected(self):
         negative = (
             "a total logistical disaster there was no clear signage for the "
