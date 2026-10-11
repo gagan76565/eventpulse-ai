@@ -3,7 +3,7 @@
 import re
 
 _FEEDBACK_LABEL = re.compile(
-    r"^\s*(?:[-*]\s*)?(?:\*\*)?feedback(?:\*\*)?\s*:\s*(.*?)\s*$",
+    r"^\s*(?:[-*]\s*)?(?:\*\*)?feedback(?:\*\*)?\s*:\s*(?:\*\*)?(.*?)\s*$",
     flags=re.IGNORECASE,
 )
 
