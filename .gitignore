@@ -1,5 +1,23 @@
+# Python
 venv/
+.venv/
 __pycache__/
-*.pyc
+*.py[cod]
+
+# Secrets
 .env
-static/uploads/*
+.env.*
+!.env.example
+
+# Generated analytics assets and exports
+static/images/*
+!static/images/.gitkeep
+exports/
+uploads/*
+!uploads/.gitkeep
+
+# Local data and OS/editor files
+*.db
+.DS_Store
+Thumbs.db
+.vscode/
