@@ -20,19 +20,21 @@ _KEYWORD_PATTERN = re.compile(
     r"(?<!\w)(?:" + "|".join(re.escape(word) for word in sorted(NEGATIVE_KEYWORDS, key=len, reverse=True)) + r")(?!\w)",
     flags=re.IGNORECASE,
 )
-# Reviews often combine praise and criticism in one response without punctuation.
 _CONTRAST_PATTERN = re.compile(
     r"\s+(?:however|although|though|but|yet|on top of that)\s+",
+    flags=re.IGNORECASE,
+)
+# Common issue subjects help separate criticism from praise even when the
+# attendee omits punctuation and words such as "but" or "though".
+_ISSUE_SUBJECT_PATTERN = re.compile(
+    r"\b(?:the event app|the audio|the venue|the lunch lines?|the parking lot|"
+    r"the advanced track sessions?|the breakout rooms?|no clear signage)\b",
     flags=re.IGNORECASE,
 )
 
 
 def detect_complaints(feedback_list):
-    """Return only responses/clauses with explicit complaint signals.
-
-    Contrast markers separate praise from criticism when possible, so a mixed
-    review does not get shown as a complaint in its entirety.
-    """
+    """Return unique responses/clauses containing explicit complaint signals."""
     complaints = []
     seen = set()
 
@@ -41,19 +43,26 @@ def detect_complaints(feedback_list):
         if not original:
             continue
 
-        # Split at contrast markers and sentence boundaries, then keep only
-        # clauses with an explicit negative signal.
-        clauses = [
-            clause.strip(" .,!;:-")
-            for piece in _CONTRAST_PATTERN.split(original)
-            for clause in re.split(r"(?<=[.!?])\s+", piece)
-            if clause.strip(" .,!;:-")
-        ]
-        matched = [clause for clause in clauses if _KEYWORD_PATTERN.search(clause)]
+        clauses = []
+        for piece in _CONTRAST_PATTERN.split(original):
+            clauses.extend(re.split(r"(?<=[.!?])\s+", piece))
 
-        # Preserve the original response if it is clearly complaint-focused
-        # but punctuation/wording prevents a useful clause-level extraction.
-        candidates = matched or ([original] if _KEYWORD_PATTERN.search(original) else [])
+        candidates = []
+        for clause in clauses:
+            clause = clause.strip(" .,!;:-")
+            if not clause or not _KEYWORD_PATTERN.search(clause):
+                continue
+
+            # If a known issue subject appears before the negative signal, keep
+            # the issue-focused portion instead of the preceding praise.
+            subject = _ISSUE_SUBJECT_PATTERN.search(clause)
+            if subject and _KEYWORD_PATTERN.search(clause[subject.start():]):
+                clause = clause[subject.start():].strip(" .,!;:-")
+            candidates.append(clause)
+
+        if not candidates and _KEYWORD_PATTERN.search(original):
+            candidates = [original]
+
         for candidate in candidates:
             key = candidate.casefold()
             if key not in seen:
