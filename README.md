@@ -1,3 +1,12 @@
+---
+title: EventPulse AI
+emoji: 📊
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+---
+
 # EventPulse AI
 
 **Turn college-event feedback into understandable evidence and practical next steps.** EventPulse AI is a Streamlit analytics app that accepts pasted feedback or CSV/TXT uploads and produces sentiment signals, recurring terms, complaint examples, positive feedback, recommendations, and a downloadable CSV report.
